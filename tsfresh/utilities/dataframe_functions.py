@@ -53,16 +53,12 @@ def impute(df_impute):
 
     :param df_impute: DataFrame to impute
     :type df_impute: pandas.DataFrame
-
-    :return df_impute: imputed DataFrame
-    :rtype df_impute: pandas.DataFrame
     """
     col_to_max, col_to_min, col_to_median = get_range_values_per_column(df_impute)
-    df_impute = impute_dataframe_range(df_impute, col_to_max, col_to_min, col_to_median)
+    impute_dataframe_range(df_impute, col_to_max, col_to_min, col_to_median)
 
     # Ensure a type of "np.float64"
     df_impute.astype(np.float64, copy=False)
-    return df_impute
 
 
 def impute_dataframe_zero(df_impute):
@@ -72,9 +68,6 @@ def impute_dataframe_zero(df_impute):
 
     :param df_impute: DataFrame to impute
     :type df_impute: pandas.DataFrame
-
-    :return df_impute: imputed DataFrame
-    :rtype df_impute: pandas.DataFrame
     """
 
     df_impute.replace([np.PINF, np.NINF], 0, inplace=True)
@@ -82,7 +75,6 @@ def impute_dataframe_zero(df_impute):
 
     # Ensure a type of "np.float64"
     df_impute.astype(np.float64, copy=False)
-    return df_impute
 
 
 def impute_dataframe_range(df_impute, col_to_max, col_to_min, col_to_median):
@@ -112,8 +104,6 @@ def impute_dataframe_range(df_impute, col_to_max, col_to_min, col_to_median):
     :param col_to_median: Dictionary mapping column names to median values
     :type col_to_max: dict
 
-    :return df_impute: imputed DataFrame
-    :rtype df_impute: pandas.DataFrame
     :raise ValueError: if a column of df_impute is missing in col_to_max, col_to_min or col_to_median or a value
                        to replace is non finite
     """
@@ -153,7 +143,6 @@ def impute_dataframe_range(df_impute, col_to_max, col_to_min, col_to_median):
         df_impute.values[indices] = replacement
 
     df_impute.astype(np.float64, copy=False)
-    return df_impute
 
 
 def get_range_values_per_column(df):
