@@ -1409,3 +1409,67 @@ def max_langevin_fixed_point(x, r, m):
     return max_fixed_point
 
 
+@set_property("fctype", "apply")
+@not_apply_to_raw_numbers
+def daily_average(x, c, param):
+    list_of_elements = []
+    name = ['daily_average_month_{0}'.format(w) for w in range(1,len(x))]
+    x[x.columns[1]] = pd.to_datetime(x[x.columns[1]])
+    
+    for i in range(0, len(x)-1):
+        list_of_elements.append(x[x.columns[0]].iloc[i+1] / (x[x.columns[1]].iloc[i+1] - x[x.columns[1]].iloc[i] ).days)
+
+    return pd.Series(list_of_elements, index=name, dtype=np.float64) 
+
+@set_property("fctype", "apply")
+@not_apply_to_raw_numbers
+def fixed_interval(x, c, param):
+    res = []
+    name = []
+    
+    for k in param:
+        kval = k["k"]
+        name.extend('K{0}_fixed_interval_{1}'.format(kval, w) for w in range(0,len(x)))
+    
+        for j in range(0, len(x)):
+            start_value = j-kval
+            start_value if start_value >= 0 else 0
+            res.append(x.iloc[j] - (x.iloc[start_value:j].sum() * (1/kval)))
+        res.append(sum(res)/len(res))
+        name.append('K{0}_fixed_interval_intra_group'.format(kval))
+    return pd.Series(res, index=name)
+
+@set_property("fctype", "apply")
+@not_apply_to_raw_numbers
+def fixed_lag(x, c, param):
+    res = []
+    name = []
+    
+    for k in param:
+        kval = k["k"]
+        name.extend('K{0}_fixed_lag_{1}'.format(kval, w) for w in range(0,len(x)))
+        for j in range(0, len(x)):
+            start_value = j-kval
+            start_value if start_value >= 0 else 0
+            res.append( (x.iloc[j] - x.iloc[start_value]).astype(np.float64) )
+        res.append(sum(res)/len(res))
+        name.append('K{0}_fixed_lag_intra_group'.format(kval)) 
+    return pd.Series(res, index=name)
+
+@set_property("fctype", "apply")
+@not_apply_to_raw_numbers
+def window(x, c, param):
+    res = []
+    name = []
+    def calc_index(offset):
+        res = j-(kval+offset)
+        return res if res >= 0 else 0
+              
+    for k in param:
+        kval = k["k"]
+        name.extend('K{0}_window_{1}'.format(kval, w) for w in range(0,len(x)))
+        for j in range(0, len(x)):
+            res.append(x.iloc[j] - (x.iloc[calc_index(1)] + x.iloc[calc_index(0)] + x.iloc[calc_index(-1)])*(1/3) )
+        res.append(sum(res)/len(res))
+        name.append('K{0}_window_intra_group'.format(kval)) 
+    return pd.Series(res, index=name)

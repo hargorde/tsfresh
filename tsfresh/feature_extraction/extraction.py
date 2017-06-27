@@ -351,11 +351,14 @@ def _extract_features_for_one_time_series(prefix_and_dataframe, column_id, colum
 
         if apply_functions:
             list_of_extracted_feature_dataframes = [extracted_features]
-            for apply_function, kwargs in apply_functions:
-                current_result = dataframe.groupby(column_id)[column_value].apply(apply_function, **kwargs).unstack()
+            for apply_function, kwargs, name in apply_functions:
+                if name == "daily_average":
+                    current_result = dataframe.groupby(column_id)[[column_value, 'DATE']].apply(apply_function, **kwargs)
+                else:
+                    current_result = dataframe.groupby(column_id)[column_value].apply(apply_function, **kwargs).unstack()
                 if len(current_result) > 0:
                     list_of_extracted_feature_dataframes.append(current_result)
-
+      
             if len(list_of_extracted_feature_dataframes) > 0:
                 extracted_features = pd.concat(list_of_extracted_feature_dataframes, axis=1,
                                                join_axes=[extracted_features.index])

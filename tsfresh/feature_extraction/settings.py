@@ -106,6 +106,10 @@ class FeatureExtractionSettings(object):
                 "friedrich_coefficients": (lambda m: [{"coeff": coeff, "m": m, "r": 30}
                                                       for coeff in range(m+1)])(3),
                 "max_langevin_fixed_point": [{"m": 3, "r": 30}],
+                "daily_average": [],
+                "fixed_interval": [{"k":i} for i in [3, 6, 12]],
+                "fixed_lag": [{"k": 12}],
+                "window": [{"k": 12}],
             })
 
         # default None means one process per cpu
@@ -321,7 +325,7 @@ class FeatureExtractionSettings(object):
                 if not isinstance(param, list):
                     raise ValueError("The parameters needs to be saved as a list of dictionaries")
 
-                apply_functions.append((func, {"c": column_prefix, "param": param}))
+                apply_functions.append((func, {"c": column_prefix, "param": param}, name))
 
             elif func.fctype == "aggregate" or func.fctype == "aggregate_with_parameters":
                 pass
