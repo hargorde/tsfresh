@@ -1426,17 +1426,18 @@ def daily_average(x, c, param):
 def fixed_interval(x, c, param):
     res = []
     name = []
+    size_value = 12
+    x = x.reset_index(drop=True)
     
-    for k in param:
-        kval = k["k"]
-        name.extend('K{0}_fixed_interval_{1}'.format(kval, w) for w in range(0,len(x)))
+    if len(x) <  size_value+1:
+        print('\x1b[0;33;41m' + 'Could not perform function fixed_interval()' + '\x1b[0m')
+        return pd.Series()
     
-        for j in range(0, len(x)):
-            start_value = j-kval
-            start_value if start_value >= 0 else 0
-            res.append(x.iloc[j] - (x.iloc[start_value:j].sum() * (1/kval)))
-        res.append(sum(res)/len(res))
-        name.append('K{0}_fixed_interval_intra_group'.format(kval))
+    for kval in [3, 6, 12]:
+        name.extend('K{0}_fixed_interval_{1}'.format(kval, w) for w in range(size_value, len(x)))
+        for j in range(size_value, len(x)):
+            res.append(x[j] - (sum(x[j-kval:j]) * 1./kval))
+        
     return pd.Series(res, index=name)
 
 @set_property("fctype", "apply")
@@ -1444,16 +1445,18 @@ def fixed_interval(x, c, param):
 def fixed_lag(x, c, param):
     res = []
     name = []
+    size_value = 12
+    kval = 12
+    x = x.reset_index(drop=True)
     
-    for k in param:
-        kval = k["k"]
-        name.extend('K{0}_fixed_lag_{1}'.format(kval, w) for w in range(0,len(x)))
-        for j in range(0, len(x)):
-            start_value = j-kval
-            start_value if start_value >= 0 else 0
-            res.append( (x.iloc[j] - x.iloc[start_value]).astype(np.float64) )
-        res.append(sum(res)/len(res))
-        name.append('K{0}_fixed_lag_intra_group'.format(kval)) 
+    if len(x) <  size_value+1:
+        print('\x1b[0;33;41m' + 'Could not perform function fixed_lag()' + '\x1b[0m')
+        return pd.Series()
+    
+    name.extend('K{0}_fixed_lag_{1}'.format(kval, w) for w in range(size_value, len(x)))
+    for j in range(size_value, len(x)):
+        res.append(x[j] - x[j-kval])
+
     return pd.Series(res, index=name)
 
 @set_property("fctype", "apply")
@@ -1461,15 +1464,16 @@ def fixed_lag(x, c, param):
 def window(x, c, param):
     res = []
     name = []
-    def calc_index(offset):
-        res = j-(kval+offset)
-        return res if res >= 0 else 0
-              
-    for k in param:
-        kval = k["k"]
-        name.extend('K{0}_window_{1}'.format(kval, w) for w in range(0,len(x)))
-        for j in range(0, len(x)):
-            res.append(x.iloc[j] - (x.iloc[calc_index(1)] + x.iloc[calc_index(0)] + x.iloc[calc_index(-1)])*(1/3) )
-        res.append(sum(res)/len(res))
-        name.append('K{0}_window_intra_group'.format(kval)) 
+    size_value = 13
+    kval = 12
+    x = x.reset_index(drop=True)
+    
+    if len(x) <  size_value+1:
+        print('\x1b[0;33;41m' + 'Could not perform function window()' + '\x1b[0m')
+        return pd.Series()
+        
+    name.extend('K{0}_window_{1}'.format(kval, w) for w in range(size_value, len(x)))
+    for j in range(size_value, len(x)):
+        res.append(x[j] - sum(x[j-kval-1:j-kval+2]) * (1./3))
+
     return pd.Series(res, index=name)

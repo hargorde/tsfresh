@@ -107,9 +107,9 @@ class FeatureExtractionSettings(object):
                                                       for coeff in range(m+1)])(3),
                 "max_langevin_fixed_point": [{"m": 3, "r": 30}],
                 "daily_average": [],
-                "fixed_interval": [{"k":i} for i in [3, 6, 12]],
-                "fixed_lag": [{"k": 12}],
-                "window": [{"k": 12}],
+                "fixed_interval": [],
+                "fixed_lag": [],
+                "window": [],
             })
 
         # default None means one process per cpu
