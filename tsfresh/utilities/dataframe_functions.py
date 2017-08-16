@@ -296,7 +296,7 @@ def normalize_input_to_internal_representation(df_or_dict, column_id, column_sor
             if kind_to_df_map[kind][column_sort].isnull().any():
                 raise ValueError("You have NaN values in your sort column.")
 
-            kind_to_df_map[kind] = kind_to_df_map[kind].sort_values(column_sort)#.drop(column_sort, axis=1)
+            kind_to_df_map[kind] = kind_to_df_map[kind].sort_values(column_sort)
 
     # Either the column for the value must be given...
     if column_value is not None:

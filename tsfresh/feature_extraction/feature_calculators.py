@@ -1442,7 +1442,7 @@ def fixed_interval(x, c, param):
 
 @set_property("fctype", "apply")
 @not_apply_to_raw_numbers
-def fixed_lag(x, c, param):
+def intra_year_diff(x, c, param):
     res = []
     name = []
     size_value = 12
@@ -1450,10 +1450,10 @@ def fixed_lag(x, c, param):
     x = x.reset_index(drop=True)
     
     if len(x) <  size_value+1:
-        print('\x1b[0;33;41m' + 'Could not perform function fixed_lag()' + '\x1b[0m')
+        print('\x1b[0;33;41m' + 'Could not perform function intra_year_diff()' + '\x1b[0m')
         return pd.Series()
     
-    name.extend('K{0}_fixed_lag_{1}'.format(kval, w) for w in range(size_value, len(x)))
+    name.extend('K{0}_intra_year_diff_{1}'.format(kval, w) for w in range(size_value, len(x)))
     for j in range(size_value, len(x)):
         res.append(x[j] - x[j-kval])
 
@@ -1461,7 +1461,7 @@ def fixed_lag(x, c, param):
 
 @set_property("fctype", "apply")
 @not_apply_to_raw_numbers
-def window(x, c, param):
+def intra_year_season(x, c, param):
     res = []
     name = []
     size_value = 13
@@ -1469,10 +1469,10 @@ def window(x, c, param):
     x = x.reset_index(drop=True)
     
     if len(x) <  size_value+1:
-        print('\x1b[0;33;41m' + 'Could not perform function window()' + '\x1b[0m')
+        print('\x1b[0;33;41m' + 'Could not perform function intra_year_season()' + '\x1b[0m')
         return pd.Series()
         
-    name.extend('K{0}_window_{1}'.format(kval, w) for w in range(size_value, len(x)))
+    name.extend('K{0}_intra_year_season_{1}'.format(kval, w) for w in range(size_value, len(x)))
     for j in range(size_value, len(x)):
         res.append(x[j] - sum(x[j-kval-1:j-kval+2]) * (1./3))
 

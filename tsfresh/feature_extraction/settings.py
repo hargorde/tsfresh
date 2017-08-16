@@ -108,8 +108,8 @@ class FeatureExtractionSettings(object):
                 "max_langevin_fixed_point": [{"m": 3, "r": 30}],
                 "daily_average": [],
                 "fixed_interval": [],
-                "fixed_lag": [],
-                "window": [],
+                "intra_year_diff": [],
+                "intra_year_season": [],
             })
 
         # default None means one process per cpu
