@@ -1,6 +1,6 @@
 requests>=2.9.1
 numpy>=1.10.4
-pandas>=0.17.1
+pandas==0.21.0
 scipy>=0.17.0
 statsmodels>=0.6.1
 patsy>=0.4.1
@@ -8,3 +8,6 @@ scikit-learn>=0.17.1
 future>=0.16.0
 six>=1.10.0
 tqdm>=4.10.0
+dask
+toolz
+cloudpickle
